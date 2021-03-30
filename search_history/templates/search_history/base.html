@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>User Search History</title>
+    {% include 'search_history/partials/_css.html' %}
+
+    <script src="{% static 'search_history/js/vendor/fullcalendar-3.10.0/fullcalendar.js' %}"></script>
+
+</head>
+
+<body class="fixed-sn white-skin">
+
+<!-- Main layout -->
+<main>
+    <div class="container">
+        <!-- Section: User Search History -->
+        <section class="my-5">
+            <!-- Grid row -->
+            <div class="row">
+                <!-- Grid column: Filter Panel  -->
+                {% include 'search_history/partials/_filter_panel.html' %}
+                <!-- /Grid column: Filter Panel -->
+
+                <!-- Grid column: Search History Table -->
+                {% include 'search_history/partials/_history_table.html' %}
+                <!-- /Grid column: Search History Table -->
+            </div>
+            <!-- /Grid row -->
+        </section>
+        <!-- /Section: User Search History -->
+    </div>
+</main>
+<!-- /Main layout -->
+<!-- SCRIPTS -->
+{% include 'search_history/partials/_scripts.html' %}
+</body>
+</html>
