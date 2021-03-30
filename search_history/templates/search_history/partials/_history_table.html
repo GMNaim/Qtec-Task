@@ -11,7 +11,8 @@
     </div>
     <div class="row">
         <div class="col-sm-6 col-md-9 py-4 px-3">
-            <h5 class="h5-responsive">Total Search (36)</h5>
+            <h5 class="h5-responsive">Total Search ({{ search_history.count }})
+            </h5>
         </div>
     </div>
 
@@ -29,31 +30,24 @@
                         <th class="font-weight-bold">Date</th>
                         <th class="font-weight-bold">User IP
                         </th>
-                        <th class="font-weight-bold">User
-                            Location
+                        <th class="font-weight-bold">City
                         </th>
                         <th class="font-weight-bold">Country</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">Naim</th>
-                        <th>Android</th>
-                        <td>4:32 PM</td>
-                        <td>21 March, 2021</td>
-                        <td>134.233.31.17</td>
-                        <td>London</td>
-                        <td>UAE</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Fahim</th>
-                        <th>IPHONE</th>
-                        <td>4:32 PM</td>
-                        <td>21 March, 2021</td>
-                        <td>134.233.31.17</td>
-                        <td>London</td>
-                        <td>Bangladesh</td>
-                    </tr>
+                    {% for search_item in search_history %}
+                        <tr>
+                            <th scope="row">{{ search_item.user }}</th>
+                            <th>{{ search_item.searched_keyword }}</th>
+                            <td>{{ search_item.search_time|time }}</td>
+                            <td>{{ search_item.search_time|date }}</td>
+                            <td>{{ search_item.user_ip_address }}</td>
+                            <td>{{ search_item.city }}</td>
+                            <td>{{ search_item.country }}</td>
+                        </tr>
+                    {% endfor %}
+
 
 
                     </tbody>

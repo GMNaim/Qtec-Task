@@ -9,8 +9,9 @@ class UserSearchHistory(models.Model):
     search_time = models.DateTimeField(auto_now=True)
     search_result = models.JSONField()
     user_ip_address = models.CharField(max_length=50)
-    user_browser_details = models.CharField(max_length=500)
-    user_location = models.CharField(max_length=255)
+    user_browser = models.CharField(max_length=500)
+    city = models.CharField(max_length=255)
+    country = models.CharField(max_length=100)
     visited_sites = models.TextField()
 
     def __str__(self):
