@@ -11,14 +11,15 @@
     </div>
     <div class="row">
         <div class="col-sm-6 col-md-9 py-4 px-3">
-            <h5 class="h5-responsive" id="total_row">Total Search{{ search_history.count|pluralize:'es' }}
+            <h5 class="h5-responsive" id="total_row">
+                Total Search{{ search_history.count|pluralize:'es' }}
                 ({{ search_history.count }})
             </h5>
         </div>
     </div>
 
     <div class="row">
-    <h4 id="ajax_loader">Loading...</h4>
+
         <div class="col-md-12 pb-3">
 
             <div class="table-responsive">
@@ -35,6 +36,14 @@
                     </tr>
                     </thead>
                     <tbody id="search_items">
+                    <tr style="text-align: center;">
+                        <td colspan="7" id="ajax_loader" style="font-size:
+                        20px;
+                        text-align:
+                         center;
+                        width: 100%">Loading...</td>
+
+                    </tr>
                     {% for search_item in search_history %}
                         <tr>
                             <th scope="row">{{ search_item.user }}</th>

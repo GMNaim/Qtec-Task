@@ -36,7 +36,13 @@ $(document).ready(function () {
                 let table = document.getElementById('searches_table');
                 document.getElementById('total_row').innerText =
                     `Total Search${table.tBodies[0].rows.length > 1 ? 'es' : ''} (${table.tBodies[0].rows.length})`;
-                console.log(table.row)
+
+                // Showing message if no search is found after filter
+                if (table.tBodies[0].rows.length === 0) {
+                    table_body = document.getElementById('search_items');
+                    table_body.innerHTML = '<tr style="text-align: center;">' +
+                        '<td colspan="7">No Matching search</td></tr>';
+                }
             }
         });
 

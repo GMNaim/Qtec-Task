@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -35,6 +37,26 @@ def filer_searches(request):
 
     all_searches = UserSearchHistory.objects.all().order_by('-id')
 
+    # Filtering with time range
+    if len(time_range) > 0:
+        for i in time_range:
+            if i == '30':
+                all_searches = all_searches.filter(
+                    search_time__gte=datetime.datetime.today() -
+                                     datetime.timedelta(days=30)).order_by('-search_time')
+            if i == '7':
+                all_searches = all_searches.filter(
+                    search_time__gte=datetime.datetime.today() -
+                                     datetime.timedelta(days=7)).order_by('-search_time')
+            if i == '1':
+                all_searches = all_searches.filter(
+                    search_time__day=(datetime.datetime.today() -
+                                     datetime.timedelta(
+                                         days=1)).day).order_by('-search_time')
+            if i == '0':
+                all_searches = all_searches.filter(
+                    search_time__day=datetime.datetime.today().day).order_by('-search_time')
+
     if len(keywords) > 0:
         all_searches = all_searches.filter(
             keyword_slug__in=keywords)
@@ -47,6 +69,7 @@ def filer_searches(request):
         all_searches = all_searches.filter(
             user_slug__in=users)
 
+    # rendering template with data for json response
     rendered_template = render_to_string(
         'search_history/ajax/filter_searches.html',
         {'all_searches': all_searches}
