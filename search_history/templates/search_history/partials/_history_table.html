@@ -4,42 +4,41 @@
          class="view view-cascade
                      gradient-card-header purple-gradient narrower py-3 mx-4
                      mb-3 d-flex justify-content-center align-items-center">
-        <a href="" class="white-text mx-3 font-weight-500"
+        <a class="white-text mx-3 font-weight-500"
            style="font-size: 25px; text-align: center;">User
             Search History</a>
 
     </div>
     <div class="row">
         <div class="col-sm-6 col-md-9 py-4 px-3">
-            <h5 class="h5-responsive">Total Search ({{ search_history.count }})
+            <h5 class="h5-responsive" id="total_row">Total Search{{ search_history.count|pluralize:'es' }}
+                ({{ search_history.count }})
             </h5>
         </div>
     </div>
 
     <div class="row">
+    <h4 id="ajax_loader">Loading...</h4>
         <div class="col-md-12 pb-3">
 
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="searches_table">
                     <thead>
                     <tr>
                         <th class="font-weight-bold">User</th>
-                        <th class="font-weight-bold">Keyword
-                        </th>
+                        <th class="font-weight-bold">Keyword</th>
                         <th class="font-weight-bold">Time</th>
                         <th class="font-weight-bold">Date</th>
-                        <th class="font-weight-bold">User IP
-                        </th>
-                        <th class="font-weight-bold">City
-                        </th>
+                        <th class="font-weight-bold">User IP</th>
+                        <th class="font-weight-bold">City</th>
                         <th class="font-weight-bold">Country</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="search_items">
                     {% for search_item in search_history %}
                         <tr>
                             <th scope="row">{{ search_item.user }}</th>
-                            <th>{{ search_item.searched_keyword }}</th>
+                            <td>{{ search_item.searched_keyword }}</td>
                             <td>{{ search_item.search_time|time }}</td>
                             <td>{{ search_item.search_time|date }}</td>
                             <td>{{ search_item.user_ip_address }}</td>
@@ -47,8 +46,6 @@
                             <td>{{ search_item.country }}</td>
                         </tr>
                     {% endfor %}
-
-
 
                     </tbody>
                 </table>

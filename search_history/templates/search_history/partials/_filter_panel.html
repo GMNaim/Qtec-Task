@@ -12,20 +12,27 @@
 
         <!-- Card content -->
         <div class="card-body card-body-cascade items-body">
-            {% for keyword, count in keywords.items %}
-                <fieldset class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox"
-                           id="keyword-1">
-                    <label class="form-check-label" for="keyword-1">
-                        {{ keyword|capfirst }}
-                    </label>
-                    <span class="badge bg-primary float-right"
-                          style="font-size: 12px;">
-                        {{ count }} time{{ count|pluralize:'s' }} found
+            <form id="keyword_form" method="POST"
+                  action="{% url 'search_history:home' %}">
+                {% csrf_token %}
+                {% for keyword in keywords %}
+                    <fieldset class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox"
+                               id="{{ keyword.keyword_slug }}"
+                               data-filter="keyword"
+                               value="{{ keyword.keyword_slug }}">
+                        <label class="form-check-label"
+                               for="{{ keyword.keyword_slug }}">
+                            {{ keyword.searched_keyword|capfirst }}
+                        </label>
+                        <span class="badge bg-primary float-right"
+                              style="font-size: 12px;">
+{#                        {{ count }} time{{ count|pluralize:'s' }} found#}
 
                     </span>
-                </fieldset>
-            {% endfor %}
+                    </fieldset>
+                {% endfor %}
+            </form>
 
         </div>
         <!-- /Card content -->
@@ -44,16 +51,19 @@
 
         <!-- Card content -->
         <div class="card-body card-body-cascade items-body">
-            {% for country, count in countries.items %}
+            {% for country in countries %}
                 <fieldset class="form-check mb-4">
                     <input class="form-check-input" type="checkbox"
-                           id="country-1">
-                    <label class="form-check-label" for="country-1">
-                        {{ country|upper }}
+                           id="{{ country.country_slug }}"
+                           data-filter="country"
+                           value="{{ country.country_slug }}">
+                    <label class="form-check-label"
+                           for="{{ country.country_slug }}">
+                        {{ country.country|upper }}
                     </label>
                     <span class="badge bg-primary float-right"
                           style="font-size: 12px;">
-                        {{ count }} time{{ count|pluralize:'s' }} found
+{#                        {{ count }} time{{ count|pluralize:'s' }} found#}
                     </span>
                 </fieldset>
             {% endfor %}
@@ -77,9 +87,11 @@
             {% for user in users %}
                 <fieldset class="form-check mb-4">
                     <input class="form-check-input" type="checkbox"
-                           id="user-1">
-                    <label class="form-check-label" for="user-1">
-                        {{ user }}
+                           id="{{ user.user_slug }}"
+                           data-filter="user"
+                           value="{{ user.user_slug }}">
+                    <label class="form-check-label" for="{{ user.user_slug }}">
+                        {{ user.user__username|capfirst }}
                     </label>
                 </fieldset>
             {% endfor %}
@@ -102,7 +114,8 @@
         <div class="card-body card-body-cascade items-body">
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="today">
+                       id="today"
+                       data-filter="time_range">
                 <label class="form-check-label" for="today">
                     See Data of Today
                 </label>
@@ -110,7 +123,8 @@
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="yesterday">
+                       id="yesterday"
+                       data-filter="time_range">
                 <label class="form-check-label"
                        for="yesterday">
                     See Data of Yesterday</label>
@@ -118,7 +132,8 @@
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="last_7_days">
+                       id="last_7_days"
+                       data-filter="time_range">
                 <label class="form-check-label"
                        for="last_7_days">
                     See Data of Last 7 days</label>
@@ -126,7 +141,8 @@
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="last_30_days">
+                       id="last_30_days"
+                       data-filter="time_range">
                 <label class="form-check-label"
                        for="last_30_days">
                     See Data of Last 30 days</label>
@@ -134,7 +150,8 @@
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="last_week">
+                       id="last_week"
+                       data-filter="time_range">
                 <label class="form-check-label"
                        for="last_week">
                     See Data of Last week</label>
@@ -142,7 +159,8 @@
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
-                       id="last_month">
+                       id="last_month"
+                       data-filter="time_range">
                 <label class="form-check-label"
                        for="last_month">
                     See Data of Last month</label>
@@ -188,3 +206,10 @@
     <!-- /Card -->
 
 </div>
+
+<script>
+    let url = "{% url 'search_history:home' %}"
+    {#console.log(url)#}
+    let csrf_token = '{{ csrf_token }}';
+    console.log(csrf_token)
+</script>

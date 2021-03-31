@@ -1,0 +1,11 @@
+{% for search_item in all_searches %}
+    <tr>
+        <th scope="row">{{ search_item.user }}</th>
+        <td>{{ search_item.searched_keyword }}</td>
+        <td>{{ search_item.search_time|time }}</td>
+        <td>{{ search_item.search_time|date }}</td>
+        <td>{{ search_item.user_ip_address }}</td>
+        <td>{{ search_item.city }}</td>
+        <td>{{ search_item.country }}</td>
+    </tr>
+{% endfor %}
