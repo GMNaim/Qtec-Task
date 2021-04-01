@@ -1,10 +1,29 @@
 $(document).ready(function () {
     // Hiding the ajax loader
     $("#ajax_loader").hide();
-
     // Checked/Unchecked checkbox and getting the filter items
-    $(".form-check-input").on('click', function () {
+    $(".form-check-input, #filter_date").on('click', function () {
         let filtered_items_object = {};
+
+        // Filter according to custom date
+        let from_date = new Date($("#from_date").val());
+        let to_date = new Date($("#to_date").val());
+
+        if (($("#from_date").val() !== '' && $("#to_date").val() === '') ||
+            ($("#from_date").val() === '' && $("#to_date").val() !== '')) {
+            alert('Please Select both date field');
+        } else {
+            if (from_date > to_date) {
+                alert('Start date must be less than end date');
+            } else if (from_date >= Date.now()) {
+                alert('Start date must be less than today');
+            } else if($("#from_date").val() !== '' && $("#to_date").val() !== ''){
+                filtered_items_object.from_date = from_date.toISOString().split('T')[0];
+                filtered_items_object.to_date = to_date.toISOString().split('T')[0];
+            }
+        }
+
+        // Filtering checkbox inputs
         $(".form-check-input").each(function (index, element) {
             // let filtered_item_value = $(this).val();
             let filtered_item_type = $(this).attr('data-filter');
@@ -16,7 +35,7 @@ $(document).ready(function () {
             });
         });
 
-        // Send data using AJAX
+        // Send AJAX GET request
         $.ajax({
             url: '/filter-searches',
             data: filtered_items_object,
