@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
@@ -23,6 +25,38 @@ class UserSearchHistory(models.Model):
         self.country_slug = slugify(self.country, allow_unicode=True)
         self.user_slug = slugify(self.user, allow_unicode=True)
         super().save(*args, **kwargs)
+
+    def get_keyword_count(self):
+        return UserSearchHistory.objects.filter(
+            searched_keyword__icontains=self.searched_keyword).count()
+
+    def get_country_count(self):
+        return UserSearchHistory.objects.filter(
+            country__icontains=self.country).count()
+
+    def get_user_count(self):
+        return UserSearchHistory.objects.filter(
+            user__username__exact=self.user.username).count()
+
+    def get_total_search_in_time(self):
+        time_range_count = {'today': 0, 'yesterday': 0, 'lastWeek': 0,
+                            'lastMonth': 0}
+        all_search = UserSearchHistory.objects.all()
+        time_range_count['today'] = all_search.filter(
+            search_time__day=datetime.datetime.today().day).count()
+
+        time_range_count['yesterday'] = all_search.filter(
+            search_time__day=(datetime.datetime.today() - datetime.timedelta(
+                                  days=1)).day).count()
+
+        time_range_count['lastWeek'] = all_search.filter(
+            search_time__gte=datetime.datetime.today() -
+                             datetime.timedelta(days=7)).count()
+
+        time_range_count['lastMonth'] = all_search.filter(
+            search_time__gte=datetime.datetime.today() -
+                             datetime.timedelta(days=30)).count()
+        return time_range_count
 
     def __str__(self):
         return self.searched_keyword

@@ -27,8 +27,8 @@
                         </label>
                         <span class="badge bg-primary float-right"
                               style="font-size: 12px;">
-{#                        {{ count }} time{{ count|pluralize:'s' }} found#}
-
+                        {{ keyword.get_keyword_count }} time
+                            {{ keyword.get_keyword_count|pluralize:'s' }} found
                     </span>
                     </fieldset>
                 {% endfor %}
@@ -63,7 +63,7 @@
                     </label>
                     <span class="badge bg-primary float-right"
                           style="font-size: 12px;">
-{#                        {{ count }} time{{ count|pluralize:'s' }} found#}
+                        {{ country.get_country_count }} time{{ country.get_country_count|pluralize:'s' }} found
                     </span>
                 </fieldset>
             {% endfor %}
@@ -91,8 +91,12 @@
                            data-filter="user"
                            value="{{ user.user_slug }}">
                     <label class="form-check-label" for="{{ user.user_slug }}">
-                        {{ user.user__username|capfirst }}
+                        {{ user.user|capfirst }}
                     </label>
+                    <span class="badge bg-primary float-right"
+                          style="font-size: 12px;">
+                        {{ user.get_user_count }} time{{ user.get_user_count|pluralize:'s' }} found
+                    </span>
                 </fieldset>
             {% endfor %}
         </div>
@@ -112,15 +116,16 @@
 
         <!-- Card content -->
         <div class="card-body card-body-cascade items-body">
+
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
                        id="today"
                        data-filter="time_range"
                        value="0">
                 <label class="form-check-label" for="today">
-                    See Data of Today
+                    See Search of Today
                 </label>
-                <span class="badge bg-primary float-right">14</span>
+                <span class="badge bg-primary float-right"> {{ today|default_if_none:0 }}</span>
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
@@ -129,8 +134,9 @@
                        value="1">
                 <label class="form-check-label"
                        for="yesterday">
-                    See Data of Yesterday</label>
-                <span class="badge bg-primary float-right">14</span>
+                    See Search of Yesterday</label>
+                <span class="badge bg-primary float-right">
+                    {{ yesterday|default_if_none:0 }}</span>
             </fieldset>
 
             <fieldset class="form-check mb-4">
@@ -140,8 +146,8 @@
                        value="7">
                 <label class="form-check-label"
                        for="last_week">
-                    See Data of Last week</label>
-                <span class="badge bg-primary float-right">14</span>
+                    See Search of Last week</label>
+                <span class="badge bg-primary float-right">{{ lastWeek|default_if_none:0 }}</span>
             </fieldset>
             <fieldset class="form-check mb-4">
                 <input class="form-check-input" type="checkbox"
@@ -150,8 +156,9 @@
                        value="30">
                 <label class="form-check-label"
                        for="last_month">
-                    See Data of Last month</label>
-                <span class="badge bg-primary float-right">14</span>
+                    See Search of Last month</label>
+                <span class="badge bg-primary float-right">
+                    {{ lastMonth|default_if_none:0 }}</span>
             </fieldset>
         </div>
         <!-- Card content -->

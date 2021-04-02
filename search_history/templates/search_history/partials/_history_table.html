@@ -1,5 +1,5 @@
 {% load static %}
-<div class="col-lg-8 mx-auto h-100 white z-depth-1">
+<div class="col-lg-8 mx-auto h-100 white z-depth-1 pr-0">
     <div style="margin-top: -20px;"
          class="view view-cascade
                      gradient-card-header purple-gradient narrower py-3 mx-4
@@ -31,6 +31,7 @@
                         <th class="font-weight-bold">Time</th>
                         <th class="font-weight-bold">Date</th>
                         <th class="font-weight-bold">User IP</th>
+                        <th class="font-weight-bold">Browser</th>
                         <th class="font-weight-bold">City</th>
                         <th class="font-weight-bold">Country</th>
                     </tr>
@@ -51,6 +52,7 @@
                             <td>{{ search_item.search_time|time }}</td>
                             <td>{{ search_item.search_time|date }}</td>
                             <td>{{ search_item.user_ip_address }}</td>
+                            <td>{{ search_item.user_browser }}</td>
                             <td>{{ search_item.city }}</td>
                             <td>{{ search_item.country }}</td>
                         </tr>

@@ -13,17 +13,34 @@ def home(request):
     all_searches = UserSearchHistory.objects.all().order_by('-id')
 
     searches = UserSearchHistory.objects.all()
-    keywords = searches.values(
-        'searched_keyword', 'keyword_slug').order_by(
-        'searched_keyword').distinct()
-    countries = searches.values('country', 'country_slug').order_by(
-        'country').distinct()
-    users = searches.values('user__username', 'user_slug').order_by(
-        'user__username').distinct()
+    keywords = searches.order_by('searched_keyword').distinct(
+        'searched_keyword')
+
+    countries = searches.order_by('country').distinct('country')
+
+    users = searches.order_by('user__username').distinct('user__username')
+
+    # Total search count according time range
+    today = None
+    yesterday = None
+    lastWeek = None
+    lastMonth = None
+    if all_searches.count():
+        time_range_count = all_searches[0].get_total_search_in_time()
+        today = time_range_count['today']
+        yesterday = time_range_count['yesterday']
+        lastWeek = time_range_count['lastWeek']
+        lastMonth = time_range_count['lastMonth']
+
     context = {'search_history': all_searches,
                'keywords': keywords,
                'countries': countries,
-               'users': users}
+               'users': users,
+               'today': today,
+               'yesterday': yesterday,
+               'lastWeek': lastWeek,
+               'lastMonth': lastMonth, }
+
     return render(request, 'search_history/base.html', context)
 
 
@@ -53,25 +70,26 @@ def filer_searches(request):
             '-search_time')
 
     # Filtering with Fixed time range
+
     if len(time_range) > 0:
         for i in time_range:
-            if i == '30':
+            if i == '30':  # 30 means last 30 days
                 all_searches = all_searches.filter(
                     search_time__gte=datetime.datetime.today() -
                                      datetime.timedelta(days=30)).order_by(
                     '-search_time')
-            if i == '7':
+            if i == '7':  # 7 means last 7 days
                 all_searches = all_searches.filter(
                     search_time__gte=datetime.datetime.today() -
                                      datetime.timedelta(days=7)).order_by(
                     '-search_time')
-            if i == '1':
+            if i == '1':  # 1 means last 1 days
                 all_searches = all_searches.filter(
                     search_time__day=(datetime.datetime.today() -
                                       datetime.timedelta(
                                           days=1)).day).order_by(
                     '-search_time')
-            if i == '0':
+            if i == '0':  # 0 means today
                 all_searches = all_searches.filter(
                     search_time__day=datetime.datetime.today().day).order_by(
                     '-search_time')
