@@ -7,6 +7,7 @@ from django.utils.text import slugify
 
 class UserSearchHistory(models.Model):
     """Keep detail record of user searches """
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_slug = models.SlugField(null=True, blank=True)
     searched_keyword = models.TextField()
@@ -20,6 +21,9 @@ class UserSearchHistory(models.Model):
     country_slug = models.SlugField(null=True, blank=True)
     visited_sites = models.TextField()
 
+    def __str__(self):
+        return self.searched_keyword
+
     def save(self, *args, **kwargs):
         self.keyword_slug = slugify(self.searched_keyword, allow_unicode=True)
         self.country_slug = slugify(self.country, allow_unicode=True)
@@ -32,13 +36,16 @@ class UserSearchHistory(models.Model):
 
     def get_country_count(self):
         return UserSearchHistory.objects.filter(
-            country__icontains=self.country).count()
+            country__icontains=self.country
+        ).count()
 
     def get_user_count(self):
         return UserSearchHistory.objects.filter(
-            user__username__exact=self.user.username).count()
+            user__username__exact=self.user.username
+        ).count()
 
-    def get_total_search_in_time(self):
+    @staticmethod
+    def get_total_search_in_time():
         time_range_count = {'today': 0, 'yesterday': 0, 'lastWeek': 0,
                             'lastMonth': 0}
         all_search = UserSearchHistory.objects.all()
@@ -46,20 +53,21 @@ class UserSearchHistory(models.Model):
             search_time__day=datetime.datetime.today().day).count()
 
         time_range_count['yesterday'] = all_search.filter(
-            search_time__day=(datetime.datetime.today() - datetime.timedelta(
-                                  days=1)).day).count()
+            search_time__day=(datetime.datetime.today() -
+                              datetime.timedelta(days=1)).day
+        ).count()
 
         time_range_count['lastWeek'] = all_search.filter(
             search_time__gte=datetime.datetime.today() -
-                             datetime.timedelta(days=7)).count()
+                             datetime.timedelta(days=7)
+        ).count()
 
         time_range_count['lastMonth'] = all_search.filter(
             search_time__gte=datetime.datetime.today() -
-                             datetime.timedelta(days=30)).count()
+                             datetime.timedelta(days=30)
+        ).count()
         return time_range_count
 
-    def __str__(self):
-        return self.searched_keyword
 
 
 """

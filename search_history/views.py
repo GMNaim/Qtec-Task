@@ -14,23 +14,24 @@ def home(request):
 
     searches = UserSearchHistory.objects.all()
     keywords = searches.order_by('searched_keyword').distinct(
-        'searched_keyword')
+        'searched_keyword'
+    )
 
     countries = searches.order_by('country').distinct('country')
 
     users = searches.order_by('user__username').distinct('user__username')
 
-    # Total search count according time range
+    # Total search count according fixed time range
     today = None
     yesterday = None
-    lastWeek = None
-    lastMonth = None
+    last_week = None
+    last_month = None
     if all_searches.count():
         time_range_count = all_searches[0].get_total_search_in_time()
         today = time_range_count['today']
         yesterday = time_range_count['yesterday']
-        lastWeek = time_range_count['lastWeek']
-        lastMonth = time_range_count['lastMonth']
+        last_week = time_range_count['lastWeek']
+        last_month = time_range_count['lastMonth']
 
     context = {'search_history': all_searches,
                'keywords': keywords,
@@ -38,8 +39,9 @@ def home(request):
                'users': users,
                'today': today,
                'yesterday': yesterday,
-               'lastWeek': lastWeek,
-               'lastMonth': lastMonth, }
+               'lastWeek': last_week,
+               'lastMonth': last_month
+               }
 
     return render(request, 'search_history/base.html', context)
 
@@ -58,56 +60,53 @@ def filer_searches(request):
 
     if from_date and to_date:
         # Formatting given date
-        start_date = datetime.datetime.strptime(from_date,
-                                                '%Y-%m-%d') + datetime.timedelta(
-            days=1)
-        end_date = datetime.datetime.strptime(to_date,
-                                              '%Y-%m-%d') + datetime.timedelta(
-            days=2)
+        start_date = datetime.datetime.strptime(
+            from_date,
+            '%Y-%m-%d'
+        ) + datetime.timedelta(days=1)
+        end_date = datetime.datetime.strptime(
+            to_date,
+            '%Y-%m-%d'
+        ) + datetime.timedelta(days=2)
         # Filtering with custom date
-        all_searches = all_searches.filter(search_time__gte=start_date,
-                                           search_time__lte=end_date).order_by(
-            '-search_time')
+        all_searches = all_searches.filter(
+            search_time__gte=start_date,
+            search_time__lte=end_date).order_by('-search_time')
 
     # Filtering with Fixed time range
-
     if len(time_range) > 0:
         for i in time_range:
             if i == '30':  # 30 means last 30 days
                 all_searches = all_searches.filter(
                     search_time__gte=datetime.datetime.today() -
-                                     datetime.timedelta(days=30)).order_by(
-                    '-search_time')
+                                     datetime.timedelta(days=30)
+                ).order_by('-search_time')
             if i == '7':  # 7 means last 7 days
                 all_searches = all_searches.filter(
                     search_time__gte=datetime.datetime.today() -
-                                     datetime.timedelta(days=7)).order_by(
-                    '-search_time')
+                                     datetime.timedelta(days=7)
+                ).order_by('-search_time')
             if i == '1':  # 1 means last 1 days
                 all_searches = all_searches.filter(
                     search_time__day=(datetime.datetime.today() -
-                                      datetime.timedelta(
-                                          days=1)).day).order_by(
-                    '-search_time')
+                                      datetime.timedelta(days=1)).day
+                ).order_by('-search_time')
             if i == '0':  # 0 means today
                 all_searches = all_searches.filter(
-                    search_time__day=datetime.datetime.today().day).order_by(
-                    '-search_time')
+                    search_time__day=datetime.datetime.today().day
+                ).order_by('-search_time')
 
     # Filter with keyword
     if len(keywords) > 0:
-        all_searches = all_searches.filter(
-            keyword_slug__in=keywords)
+        all_searches = all_searches.filter(keyword_slug__in=keywords)
 
     # Filter with country
     if len(countries) > 0:
-        all_searches = all_searches.filter(
-            country_slug__in=countries)
+        all_searches = all_searches.filter(country_slug__in=countries)
 
     # Filter with user
     if len(users) > 0:
-        all_searches = all_searches.filter(
-            user_slug__in=users)
+        all_searches = all_searches.filter(user_slug__in=users)
 
     # rendering template with data for json response
     rendered_template = render_to_string(
